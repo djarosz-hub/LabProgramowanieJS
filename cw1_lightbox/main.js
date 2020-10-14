@@ -7,8 +7,6 @@ for(let i = 0; i < gallery.length ;i++){
 }
 const arrowPrevDiv = document.querySelector('.arrowprev');
 const arrowNextDiv = document.querySelector('.arrownext');
-//const arrowNext = document.querySelector('.arrownext i');
-//const arrowPrev = document.querySelector('.arrowprev i');
 function showLightbox(ev){
     console.dir(ev.target);
     const lightbox = document.querySelector('.lightbox');
@@ -23,8 +21,8 @@ function showLightbox(ev){
     imageChange(ev.target);
 }
 function imageChange(el){
-    // console.log('element odebrany:');
-    // console.log(el);
+    console.log('element odebrany w funkcji imagechange:');
+    console.log(el);
     arrowCheck(el);
     arrowPrevDiv.addEventListener('click', function(){
         const img = document.querySelector('.lightbox img');
@@ -56,7 +54,7 @@ function arrowCheck(el){
 const mainLightbox = document.querySelector('.lightbox');
 mainLightbox.addEventListener('click', hide);
 function hide(event){
-    console.log(event.target);
+    //console.log(event.target);
     if(event.target.id != 'prev' && event.target.id != 'next')
         mainLightbox.classList.toggle('visible');
 }
