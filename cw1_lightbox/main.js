@@ -1,5 +1,6 @@
 //pobranie referencji
 const gallery = document.querySelectorAll('.gallery img');
+let selectedImage;
 
 for(let i = 0; i < gallery.length ;i++){
     const img = gallery[i];
@@ -7,6 +8,16 @@ for(let i = 0; i < gallery.length ;i++){
 }
 const arrowPrevDiv = document.querySelector('.arrowprev');
 const arrowNextDiv = document.querySelector('.arrownext');
+arrowPrevDiv.addEventListener('click', function() {
+    const img = document.querySelector('.lightbox img');
+    img.src = selectedImage.previousElementSibling.src;
+    imageChange(selectedImage.previousElementSibling);
+});
+arrowNextDiv.addEventListener('click', function() {
+    const img = document.querySelector('.lightbox img');
+    img.src = selectedImage.nextElementSibling.src;
+    imageChange(selectedImage.nextElementSibling);
+});
 function showLightbox(ev){
     console.dir(ev.target);
     const lightbox = document.querySelector('.lightbox');
@@ -14,28 +25,18 @@ function showLightbox(ev){
     const imgUrl = ev.target.src;
     img.src = imgUrl;
     lightbox.classList.add('visible');
-    // const nextElement = ev.target.nextElementSibling;
-    // const previousElement = ev.target.previousElementSibling;
-    // console.log(previousElement);
-    // console.log(nextElement);
+
     imageChange(ev.target);
 }
+
 function imageChange(el){
     console.log('element odebrany w funkcji imagechange:');
     console.log(el);
     arrowCheck(el);
-    arrowPrevDiv.addEventListener('click', function(){
-        const img = document.querySelector('.lightbox img');
-        img.src = el.previousElementSibling.src;
-        imageChange(el.previousElementSibling);
-    });
-    arrowNextDiv.addEventListener('click', function(){
-        const img = document.querySelector('.lightbox img');
-        img.src = el.nextElementSibling.src;
-        imageChange(el.nextElementSibling);
-    });
+    selectedImage = el;
 
 }
+
 function arrowCheck(el){
     if(el.previousElementSibling == null){
         arrowPrevDiv.classList.add('arrowHidden');
@@ -52,8 +53,8 @@ function arrowCheck(el){
 }
 
 const mainLightbox = document.querySelector('.lightbox');
-mainLightbox.addEventListener('click', hide);
-function hide(event){
+mainLightbox.addEventListener('click', hideLightbox);
+function hideLightbox(event){
     //console.log(event.target);
     if(event.target.id != 'prev' && event.target.id != 'next')
         mainLightbox.classList.toggle('visible');
