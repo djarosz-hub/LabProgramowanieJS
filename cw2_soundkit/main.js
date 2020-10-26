@@ -73,12 +73,17 @@ function onKeyPress(ev){
         break;
     }
     if(soundId){
+        let keyHighlight = ev.code;
+        let keyPressed = document.getElementById(keyHighlight);
+        keyPressed.classList.add('keyDown');
+        console.log(keyHighlight);
         let soundClass = soundId.substr(0,soundId.length-1);  
         console.log(soundClass);
         const soundTime = Date.now() - recordStartTime;
         const soundObj = {soundId: soundId,
             time: soundTime,
-            soundClass: soundClass};
+            soundClass: soundClass,
+            soundCode: ev.code};
         playSound(soundId);
         if(soundTime === soundTime) {
         //checking if value is NaN (NaN is never equal to NaN)
@@ -88,7 +93,14 @@ function onKeyPress(ev){
                 recordedSounds.push(soundObj);
             console.log(recordedSounds);
         }
+        highlightDuration(keyPressed);
     }
+}
+function highlightDuration(el){
+    setTimeout(()=>{
+        el.classList.remove('keyDown');
+    },
+    200);
 }
 function checkingForClass(obj){
     let classCheck = false;
@@ -148,23 +160,27 @@ function onPlayBtn(){
         let timeToUnlockFunction = 300;
         for ( let index = 0; index < recordedSounds.length; index++){
             const soundObj = recordedSounds[index];
+            let keyPressed = document.getElementById(soundObj.soundCode);
             if(index === recordedSounds.length-1){
                 timeToUnlockFunction += soundObj.time;
             }
             setTimeout(()=>{
-                isClassPlayable(soundObj);
+                keyPressed.classList.add('keyDown');
+                isClassPlayable(soundObj,keyPressed);
             },
             soundObj.time
             );  
+            // highlightDuration(keyPressed);
         }
         setTimeout(()=>{
             isAbleToPlay = true;
-            console.log('function is callable again');
+            console.log('Play function is callable again');
         },timeToUnlockFunction);
         
     }
 }
-function isClassPlayable(soundObject){
+function isClassPlayable(soundObject, keyPressed){
+    highlightDuration(keyPressed);
     let checkboxId = soundObject.soundClass + 'Check';
     console.log(checkboxId);
     let isChecked = document.getElementById(checkboxId).checked;
