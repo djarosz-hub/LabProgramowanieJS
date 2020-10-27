@@ -8,6 +8,7 @@ let claps;
 let hihats;
 let kicks;
 let percs;
+
 function onKeyPress(ev){
     let soundId;
     switch(ev.code){
@@ -147,14 +148,18 @@ function onRecordBtn(){
     if(condition === 'Record'){
         recordedSounds = [];
         document.getElementById('recordBtn').innerHTML = 'Recording';
+        recording(1);
         recordStartTime = Date.now();
         checkedChannels();
     }
-    else
+    else{
         document.getElementById('recordBtn').innerHTML = 'Record';
+        recording();
+    }
 }
 function onPlayBtn(){
     document.getElementById('recordBtn').innerHTML = 'Record';
+    recording();
     if(isAbleToPlay){
         isAbleToPlay = false;
         let timeToUnlockFunction = 300;
@@ -170,7 +175,6 @@ function onPlayBtn(){
             },
             soundObj.time
             );  
-            // highlightDuration(keyPressed);
         }
         setTimeout(()=>{
             isAbleToPlay = true;
@@ -191,4 +195,11 @@ function isClassPlayable(soundObject, keyPressed){
 function playSound(soundId){
     const sound = document.querySelector('#'+soundId);
     sound.play();
+}
+function recording(flag){
+    const el = document.getElementById('recordBtn');
+    if(flag === 1)
+        el.classList.add('recording');
+    else
+        el.classList.remove('recording');
 }
