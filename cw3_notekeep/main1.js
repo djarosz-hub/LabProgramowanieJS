@@ -68,7 +68,7 @@ function getAllNotesFromHtml(){
                 break;  
             }
         }
-        //alert(date);
+        alert(date);
         generateNote(title, content, noteClass[2], date, noteClass[1]);
     }
     //return notes.length > 0 ? true : false; 
