@@ -1,10 +1,10 @@
 document.addEventListener('readystatechange', () => {    
     if (document.readyState == 'complete') {
         getNotesFromLocalStorage();
-        getAllNotesFromHtml();
     }
 });
 window.onbeforeunload = synchronize;
+
 function synchronize(){
     notes = [];
     getAllNotesFromHtml();
@@ -19,43 +19,37 @@ function newNoteCreateFunction(){
     const noteTitle = document.getElementById('noteTitle').value;
     const noteContent = document.getElementById('noteContent').value;
     const noteDate = new Date;
-    // console.log(noteTitle);
-    // console.log(noteContent);
-    // console.log(noteDate);
     generateNote(noteTitle,noteContent,'unpinned',noteDate,'default', true);
-    // const note = {
-    //     title: noteTitle,
-    //     content: noteContent,
-    //     pinned: false,
-    //     date: noteDate,
-    //     color: 'default',
-    // };
-    // notes.push(note);
 }
+
 function pushNotesToLocalStorage(){
     localStorage.setItem(lsNotesKey,JSON.stringify(notes));
-    //notes = [];
 }
+
 function getNotesFromLocalStorage(){
     const notesFromLocalStorage = JSON.parse(localStorage.getItem(lsNotesKey));
+    // for(const note of notesFromLocalStorage){
+    //     console.log(note.date, 'data pobrana');
+    // }
     const convertedNotes = notesFromLocalStorage.map( note => {
         note.date = new Date(note.date.toLocaleString());
         return note;
     });
+    // for(const note of convertedNotes){
+    //     console.log(note.date, 'data pobrana z converted');
+    // }
     for(const note of convertedNotes){
-        renderNotes(note);
+        renderNote(note);
     }
 }
+
 function getAllNotesFromHtml(){
-    //QUERYSELECTORALL CLASS NOTE
     const inBodyNotes = document.body.querySelectorAll('.note');
-    //const nodes = [].slice.call(inBodyNotes,1);
     console.log(inBodyNotes);
     for(const note of inBodyNotes){
         const noteClass = note.classList.toString().split(' ');
         //1 = kolor, 2 = pinned
         const temp = note.children;
-        //console.log(temp);
         let title = '';
         let content = '';
         let date = '';
@@ -74,13 +68,10 @@ function getAllNotesFromHtml(){
                 break;  
             }
         }
+        //alert(date);
         generateNote(title, content, noteClass[2], date, noteClass[1]);
     }
-    // if(notes.length > 0)
-    //     return true;
-    // else
-    //     return false;
-    return notes.length > 0 ? true : false; 
+    //return notes.length > 0 ? true : false; 
 }
 function generateNote(title,content,pin,date,color ='default',toRender = false){
     const isPinned = pin==='pinned'? true : false;
@@ -91,20 +82,19 @@ function generateNote(title,content,pin,date,color ='default',toRender = false){
         date: new Date(date),
         color: color,
     };
+    //console.log(note.date,'data w generate note bez locale');
+    //console.log(note.date.toLocaleString(),'data w generate note z locale');
     console.log(note);
     console.log('to render: ', toRender);
     if(toRender){
-        renderNotes(note);
-        //pushNotesToLocalStorage();
-        // synchronizeNotes();
+        renderNote(note);
     }
     else
         notes.push(note);
 }
-function renderNotes(note){
+function renderNote(note){
     const isPinned = note.pinned?'pinned':'unpinned';
     let noteColor = '';
-    //TODO
     switch(note.color){
     case 'olive':
         // #336600
@@ -148,6 +138,7 @@ function renderNotes(note){
     htmltitle.innerHTML = note.title;
     htmlContent.innerHTML = note.content;
     htmlTime.innerHTML = note.date.toLocaleString();
+    //console.log(htmlTime.innerHTML,'data w rendernote');
     htmlButton.innerHTML = 'remove';
     htmlButton.addEventListener('click', removeNote);
     htmlNote.appendChild(htmltitle);
@@ -156,24 +147,7 @@ function renderNotes(note){
     htmlNote.appendChild(htmlButton);
     notesContainer.appendChild(htmlNote);
 }
-//TODO
-function synchronizeNotes(clean = false){
-    if(clean){
-        notes = [];
-    }
-    getAllNotesFromHtml();
-    console.log('all notes taken');
-    pushNotesToLocalStorage();
-}
 function removeNote(ev){
     const tag = ev.target.parentNode;
-    console.log(tag);
     tag.parentNode.removeChild(tag);
-    //synchronizeNotes(true);
-    // getAllNotesFromHtml();
-    // console.log('all notes taken');
-    // pushNotesToLocalStorage();
-    //getNotesFromLocalStorage();
-    
-
 }
