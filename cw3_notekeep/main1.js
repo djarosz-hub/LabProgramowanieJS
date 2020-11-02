@@ -75,6 +75,8 @@ function getAllNotesFromHtml(){
 }
 function generateNote(title,content,pin,date,color ='default',toRender = false){
     const isPinned = pin==='pinned'? true : false;
+    //const validatedDateFormat = dateCheck(date);
+    //console.log(date,'tutaj poprawiamy');
     const note = {
         title: title,
         content: content,
@@ -92,6 +94,17 @@ function generateNote(title,content,pin,date,color ='default',toRender = false){
     else
         notes.push(note);
 }
+// function dateCheck(date){
+//     //const pattern = /^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/;
+//     const check = date.match(/^\d{4}[\/\-](0?[1-9]|1[012])[\/\-](0?[1-9]|[12][0-9]|3[01])$/);
+//     if(check)
+//         return date;
+//     else{
+//         return date.split('/').reverse().join('-');
+//     }
+
+// }
+
 function renderNote(note){
     const isPinned = note.pinned?'pinned':'unpinned';
     let noteColor = '';
