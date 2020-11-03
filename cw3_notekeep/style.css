@@ -1,0 +1,121 @@
+body{
+    background-color: #173f5f;
+    font-family: 'Trebuchet MS', 'Lucida Sans Unicode', 'Lucida Grande', 'Lucida Sans', Arial, sans-serif;
+}
+.noteCreate{
+    display:flex;
+    flex-wrap: wrap;
+    flex-direction: column;
+    align-content: center;
+    font-size: 20px;
+}
+.noteCreate textarea{
+    resize:none;
+    height: 50px;
+    width: 250px;
+}
+.noteCreate textarea, .noteCreate input{
+    margin:5px;
+}
+button{
+    font-weight: bold;
+    font-style: italic;
+    color:#993366;
+    border-radius: 10px;
+    border: solid #993366 2px;
+}
+
+.note{
+    box-shadow: 0px 0px 7px black;;
+    border-radius: 5px;
+    width:auto;
+    max-width: 400px;
+    min-width: 250px;
+    display:inline-block;
+    border:solid black 1px;
+    margin:10px;
+    /* transition: 1s; */
+}
+.note h1{
+    font-size: 30px;
+    margin:5px 0px 5px 0px;
+    padding:5px;
+    border-bottom: solid black 1px;
+    box-shadow: 0px 5px 5px #00000066;
+    overflow:auto;
+    word-break: break-all;
+}
+.note h1, .note time, .noteCreate{
+    text-shadow:2px 2px 2px black;
+    text-align: center;
+    color:whitesmoke;
+}
+.note p{
+    font-family: monospace;
+    font-size: 23px;
+    text-align: center;
+    margin:10px auto 10px auto;
+    width: 95%;
+    height: 110px;
+    overflow: auto;
+    word-break: break-all;
+}
+.note button{
+    width:100px;
+    display:block;
+    margin:0px auto 3px auto;
+}
+.note time{
+    box-shadow: 0px -5px 5px #00000066;
+    font-weight: bold;
+    display:block;
+    border-top: solid black 1px;
+    padding:3px 0px;
+}
+.olive{
+    background-color: #336600;
+    color:whitesmoke;
+}
+.lavend{
+    background-color: #666699;
+}
+.blue{
+    background-color: #336699;
+    color:whitesmoke;
+}
+.lightblue{
+    background-color: #99ccff;
+}
+.sand{
+    background-color: #999966;
+}
+.red{
+    background-color: #cc0000;
+}
+.violet{
+    background-color: #993366;
+}
+.default{
+    background-color: #808080;
+}
+.paletteHolder{
+    height: 25px;
+    display:flex;
+    justify-content: center;
+}
+.palette{
+    width:15px;
+    height: 15px;
+    border: dotted black 1px;
+    margin:0 5px 3px 5px;
+}
+.palette:hover, .note button:hover{
+    box-shadow: 0 0 10px black;
+    transition: 0.3s;
+}
+.chosenColor{
+    width: 13px;
+    height: 13px;
+    box-shadow: 0 0 10px black;
+    border:solid black 2px;
+}

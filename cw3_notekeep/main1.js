@@ -2,7 +2,7 @@ const lsNotesKey = 'notes';
 document.addEventListener('DOMContentLoaded', () => {    
     getNotesFromLocalStorage();
     for(const note of notes){
-        renderNote(note, note.noteId,false);
+        renderNote(note, note.noteId, false);
     }
 }
 );
@@ -102,21 +102,94 @@ function renderNote(note,noteId,toPrepend){
     const htmlContent = document.createElement('p');
     const htmlTime = document.createElement('time');
     const htmlButton = document.createElement('button');
+    const htmlColorChange = createPalette(noteColor);
     htmlNote.id = noteId;
     htmlNote.classList.add('note', noteColor, isPinned);
     htmltitle.innerHTML = note.title;
     htmlContent.innerHTML = note.content;
-    htmlTime.innerHTML = note.date.toLocaleString();
-    htmlButton.innerHTML = 'remove';
+    htmlTime.innerHTML = 'Created '+note.date.toLocaleString();
+    htmlColorChange.classList.add('paletteHolder');
+    htmlButton.innerHTML = 'Remove';
     htmlButton.addEventListener('click', removeNote);
     htmlNote.appendChild(htmltitle);
     htmlNote.appendChild(htmlContent);
     htmlNote.appendChild(htmlTime);
+    htmlNote.appendChild(htmlColorChange);
     htmlNote.appendChild(htmlButton);
     if(toPrepend)
         notesContainer.prepend(htmlNote);
     else
         notesContainer.appendChild(htmlNote);
+}
+function createPalette(chosenColor){
+    console.log(chosenColor);
+    const olive = document.createElement('div');
+    const lavend = document.createElement('div');
+    const blue = document.createElement('div');
+    const lightblue = document.createElement('div');
+    const sand = document.createElement('div');
+    const red = document.createElement('div');
+    const violet = document.createElement('div');
+    const def = document.createElement('div');
+    olive.classList.add('olive','palette');
+    lavend.classList.add('lavend', 'palette');
+    blue.classList.add('blue', 'palette');
+    lightblue.classList.add('lightblue', 'palette');
+    sand.classList.add('sand', 'palette');
+    red.classList.add('red', 'palette');
+    violet.classList.add('violet', 'palette');
+    def.classList.add('default', 'palette');
+    switch(chosenColor){
+    case 'olive':
+        olive.classList.add('chosenColor');
+        break;
+    case 'lavend':
+        lavend.classList.add('chosenColor');
+        break;
+    case 'blue':
+        blue.classList.add('chosenColor');
+        break;
+    case 'lightblue':
+        lightblue.classList.add('chosenColor');
+        break;
+    case 'sand':
+        sand.classList.add('chosenColor');
+        break;
+    case 'red':
+        red.classList.add('chosenColor');
+        break;
+    case 'violet':
+        violet.classList.add('chosenColor');
+        break;
+    case 'default':
+        def.classList.add('chosenColor');
+        break;
+    }
+    const colors = [];
+    const palette = document.createElement('div');
+    colors.push(olive,lavend,blue,lightblue,sand,red,violet,def);
+    for(const col of colors){
+        palette.appendChild(col);
+        col.addEventListener('click',changeColor);
+    }
+    return palette;
+}
+function changeColor(ev){
+    const allDivsInPalette = ev.target.parentNode.children;
+    const colorKey = 'chosenColor';
+    for(const col of allDivsInPalette){
+        if(col.classList.value.includes(colorKey))
+            col.classList.remove(colorKey);
+    }
+    ev.target.classList.add(colorKey);
+    const pickedColor = ev.target.classList[0];
+    const takenNote = ev.target.parentNode.parentNode;
+    const takenNoteId = takenNote.id;
+    const noteIndex = notes.findIndex(note => note.noteId==takenNoteId);
+    notes[noteIndex].color = pickedColor;
+    const noteClasses = takenNote.classList.value.split(' ');
+    const newClass = noteClasses[0] + ' ' + pickedColor + ' ' + noteClasses[2];
+    takenNote.classList.value = newClass;
 }
 function removeNote(ev){
     const tag = ev.target.parentNode;
