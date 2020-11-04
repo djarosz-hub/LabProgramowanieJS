@@ -7,7 +7,7 @@ document.addEventListener('DOMContentLoaded', () => {
 }
 );
 window.onbeforeunload = synchronize;
-
+//NEED TO CREATE TWO SEPARATE CONTAINERS FOR PINNED AND UNPINNED NOTES
 function synchronize(){
     pushNotesToLocalStorage();
 }
