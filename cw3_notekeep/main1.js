@@ -53,6 +53,8 @@ function generateNote(title,content,pin,date,color ='default',noteId, toPrepend 
         noteId: noteId,
     };
     console.log(note);
+    if(isPinned==true)
+        toPrepend = true;
     renderNote(note,noteId,toPrepend);
     if(toPrepend)
         notes.unshift(note);
@@ -103,6 +105,7 @@ function renderNote(note,noteId,toPrepend){
     const htmlTime = document.createElement('time');
     const htmlButton = document.createElement('button');
     const htmlColorChange = createPalette(noteColor);
+    const pinnedArea = createPinnedCheck(isPinned);
     htmlNote.id = noteId;
     htmlNote.classList.add('note', noteColor, isPinned);
     htmltitle.innerHTML = note.title;
@@ -115,11 +118,49 @@ function renderNote(note,noteId,toPrepend){
     htmlNote.appendChild(htmlContent);
     htmlNote.appendChild(htmlTime);
     htmlNote.appendChild(htmlColorChange);
+    htmlNote.appendChild(pinnedArea);
     htmlNote.appendChild(htmlButton);
-    if(toPrepend)
+    if(toPrepend || isPinned=='pinned')
         notesContainer.prepend(htmlNote);
     else
         notesContainer.appendChild(htmlNote);
+}
+function createPinnedCheck(isPinned){
+    const pinnedAreaDiv = document.createElement('div');
+    pinnedAreaDiv.classList.add('pinnedArea');
+    const pinnedInput = document.createElement('input');
+    pinnedInput.setAttribute('type','checkbox');
+    pinnedAreaDiv.appendChild(pinnedInput);
+
+    console.log(isPinned);
+    if((isPinned=='pinned'))
+        pinnedInput.checked = true;
+    pinnedInput.addEventListener('click',onPinnedClick);
+    return pinnedAreaDiv;
+}
+function onPinnedClick(ev){
+    if(ev.target.checked==true){
+        const pinnedNote = ev.target.parentNode.parentNode;
+        console.log(pinnedNote,'notka tu');
+        const pinnedNoteId = pinnedNote.id;
+        console.log(pinnedNoteId,'id here');
+        const noteIndex = notes.findIndex(note => note.noteId==pinnedNoteId);
+        console.log(noteIndex,'note index new');
+        const newNoteTitle = notes[noteIndex].title;
+        const newNoteContent = notes[noteIndex].content;
+        const isNotePinned = 'pinned';
+        const newNoteDate = notes[noteIndex].date;
+        const newNoteColor = notes[noteIndex].color;
+        const newNoteId = new Date().getTime().toString();
+        const toPrependNewNote = true;
+        console.log(newNoteTitle,newNoteContent,isNotePinned,newNoteDate,newNoteColor,newNoteId,toPrependNewNote);
+        notes.splice(noteIndex,1);
+        console.log(pinnedNote);
+        pinnedNote.parentNode.removeChild(pinnedNote);
+        console.log(isNotePinned,'checkuje tu');
+        generateNote(newNoteTitle,newNoteContent,isNotePinned,newNoteDate,newNoteColor,newNoteId,toPrependNewNote);
+    }
+
 }
 function createPalette(chosenColor){
     console.log(chosenColor);
@@ -188,7 +229,7 @@ function changeColor(ev){
     const noteIndex = notes.findIndex(note => note.noteId==takenNoteId);
     notes[noteIndex].color = pickedColor;
     const noteClasses = takenNote.classList.value.split(' ');
-    const newClass = noteClasses[0] + ' ' + pickedColor + ' ' + noteClasses[2];
+    const newClass = `${noteClasses[0]} ${pickedColor} ${noteClasses[2]}`;
     takenNote.classList.value = newClass;
 }
 function removeNote(ev){

@@ -45,7 +45,7 @@ button{
     overflow:auto;
     word-break: break-all;
 }
-.note h1, .note time, .noteCreate{
+.note h1, .note time, .noteCreate, .pinnedArea::before{
     text-shadow:2px 2px 2px black;
     text-align: center;
     color:whitesmoke;
@@ -118,4 +118,14 @@ button{
     height: 13px;
     box-shadow: 0 0 10px black;
     border:solid black 2px;
+}
+.pinnedArea{
+    display: flex;
+    justify-content: center;
+    margin-bottom: 5px;
+}
+.pinnedArea::before{
+    font-style: italic;
+    font-weight: 600;
+    content: 'Pinned';
 }
