@@ -1,0 +1,82 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="style.css">
+    <title>Document</title>
+      <!--Sound samples belongs to 99Sounds - https://99sounds.org-->
+</head>
+<body>
+    <div>
+    <audio src="sounds/clap1.wav" id="clap1" class="clap"></audio>
+    <audio src="sounds/clap2.wav" id="clap2" class="clap"></audio>
+    <audio src="sounds/clap3.wav" id="clap3" class="clap"></audio>
+    <audio src="sounds/clap4.wav" id="clap4" class="clap"></audio>
+    <audio src="sounds/clap5.wav" id="clap5" class="clap"></audio>
+
+    <audio src="sounds/hihat1.wav" id="hihat1" class="hihat"></audio>
+    <audio src="sounds/hihat2.wav" id="hihat2" class="hihat"></audio>
+    <audio src="sounds/hihat3.wav" id="hihat3" class="hihat"></audio>
+    <audio src="sounds/hihat4.wav" id="hihat4" class="hihat"></audio>
+    <audio src="sounds/hihat5.wav" id="hihat5" class="hihat"></audio>
+
+    <audio src="sounds/kick1.wav" id="kick1" class="kick"></audio>
+    <audio src="sounds/kick2.wav" id="kick2" class="kick"></audio>
+    <audio src="sounds/kick3.wav" id="kick3" class="kick"></audio>
+    <audio src="sounds/kick4.wav" id="kick4" class="kick"></audio>
+    <audio src="sounds/kick5.wav" id="kick5" class="kick"></audio>
+    
+    <audio src="sounds/perc1.wav" id="perc1" class="perc"></audio>
+    <audio src="sounds/perc2.wav" id="perc2" class="perc"></audio>
+    <audio src="sounds/perc3.wav" id="perc3" class="perc"></audio>
+    <audio src="sounds/perc4.wav" id="perc4" class="perc"></audio>
+    <audio src="sounds/perc5.wav" id="perc5" class="perc"></audio>
+    </div>
+    <div class="board">
+        <div class="row first">
+            <div id="Digit1" class="key">1</div>
+            <div id="Digit2" class="key">2</div>
+            <div id="Digit3" class="key">3</div>
+            <div id="Digit4" class="key">4</div>
+            <div id="Digit5" class="key">5</div>
+        </div>
+        <div class="row second">
+            <div id="KeyQ" class="key">Q</div>
+            <div id="KeyW" class="key">W</div>
+            <div id="KeyE" class="key">E</div>
+            <div id="KeyR" class="key">R</div>
+            <div id="KeyT" class="key">T</div>
+        </div>
+        <div class="row third">
+            <div id="KeyA" class="key">A</div>
+            <div id="KeyS" class="key">S</div>
+            <div id="KeyD" class="key">D</div>
+            <div id="KeyF" class="key">F</div>
+            <div id="KeyG" class="key">G</div>
+        </div>
+        <div class="row fourth">
+            <div id="KeyZ" class="key">Z</div>
+            <div id="KeyX" class="key">X</div>
+            <div id="KeyC" class="key">C</div>
+            <div id="KeyV" class="key">V</div>
+            <div id="KeyB" class="key">B</div>
+        </div>
+    </div>
+    <div class="description">
+        <input type="checkbox" id="clapCheck" value="clap" checked>
+        <label for="clapCheck">Claps</label>
+        <input type="checkbox" id="hihatCheck" value="hihat" checked>
+        <label for="hihatCheck">Hihats</label>
+        <input type="checkbox" id="kickCheck" value="kick" checked>
+        <label for="kickCheck">Kicks</label>
+        <input type="checkbox" id="percCheck" value="perc" checked>
+        <label for="percCheck">Percs</label>
+    </div>
+    <div class="buttons">
+        <button id="recordBtn">Record</button>
+        <button id="playBtn">Play</button>
+    </div>
+    <script src="main.js" type="text/javascript"></script>
+</body>
+</html>
