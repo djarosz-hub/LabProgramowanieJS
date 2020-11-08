@@ -172,6 +172,7 @@ function onPlayBtn(){
             setTimeout(()=>{
                 keyPressed.classList.add('keyDown');
                 isClassPlayable(soundObj,keyPressed);
+                console.log(soundObj.time);
             },
             soundObj.time
             );  
