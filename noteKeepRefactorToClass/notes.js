@@ -72,12 +72,9 @@ export default class Notes{
         htmlContent.innerHTML = note.content;
 
         const htmlTime = document.createElement('time');
-        console.log(note.date);
-        console.log(note.date.toString());
-        console.log(note.date.toLocaleString());
-        console.log(note.date.toLocaleString("en-US"));
+        const datex = new Date(note.date); 
 
-        htmlTime.innerHTML = 'Created '+ note.date.toLocaleString();
+        htmlTime.innerHTML = 'Created '+ datex.toLocaleString();
         
         const htmlColorChange = this.createPalette(note.color,note.id);
         htmlColorChange.classList.add('paletteHolder');
@@ -120,6 +117,7 @@ export default class Notes{
         red.classList.add('red', 'palette');
         violet.classList.add('violet', 'palette');
         def.classList.add('default', 'palette');
+        
         switch(noteColor){
         case 'olive':
             olive.classList.add('chosenColor');
@@ -151,7 +149,6 @@ export default class Notes{
         colors.push(olive,lavend,blue,lightblue,sand,red,violet,def);
         for(const col of colors){
             palette.appendChild(col);
-            console.log(col.classList[0]);
             col.addEventListener('click',()=>{
                 this.ui.changeColor(col.classList[0],noteId,this.notes);
                 setTimeout(() => {
