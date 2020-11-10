@@ -1,16 +1,11 @@
 import Key from './key.js';
 import KeyboardVisuals from './keyboardVisuals.js';
+import RecordAndPlay from './record.js';
 
 export default class Keyboard {
     constructor(){
-        this.recordedSounds = [];
-        this.recordStartTime = 0;
-        this.recordingState = false;
     }
     
-    tryToSaveSound(soundObj){
-        console.log('test');
-    }
     onKeyPress(ev){
         const keyPressed = ev.code;
         let soundId;
@@ -78,22 +73,59 @@ export default class Keyboard {
         }
         console.log(keyPressed);
         console.log(soundId);
+        const soundGroup = this.getSoundGroup(soundId);
+        //console.log(soundGroup);
         if(soundId){
             KeyboardVisuals.keyHighlight(keyPressed);
-            const soundObj = new Key(keyPressed,soundId,this.recordStartTime);
-            console.log(soundObj.time);
+            let soundObj;
+            if(this.record){
+                console.log('jest rekord');
+                soundObj = new Key(keyPressed,soundId,soundGroup, this.record.recordStartTime);
+                this.record.tryToSaveSound(soundObj);
+                console.log(this.record.recordedSounds);
+            }
+            else{
+                console.log('nie ma rekorda');
+                soundObj = new Key(keyPressed,soundId, soundGroup, undefined);
+            }    
             soundObj.playSound();
-            
-            this.tryToSaveSound(soundObj);
-            //this.onRecordPress();
-            // if(this.recordingState === true)
-            //     this.recordedSounds.push(soundObj);
         }
     }
-    
-    onRecordPress(){
+    getSoundGroup(sound){
+        const group = sound.substring(0,sound.length-1) + 's';
+        return group;        
     }
-    onPlayPress(){ 
+    onRecordPress(){
+        let condition = document.getElementById('recordBtn').innerHTML;
+        if(condition === 'Record'){
+            this.record = new RecordAndPlay();
+            console.log('new record obj');
+            const btn = document.getElementById('recordBtn');
+            btn.innerHTML = 'Recording';
+            btn.classList.add('recording');
+            console.log(this.record);
+        }
+        else{
+            const btn = document.getElementById('recordBtn');
+            btn.innerHTML = 'Record';
+            btn.classList.remove('recording');
+        }
+    }
+    onPlayPress(){
+        if(this.record){ 
+            if(this.record.recordedSounds.length == 0){
+                alert('No sounds recorded yet');
+                this.onRecordPress();
+            }
+            else{
+                const btn = document.getElementById('recordBtn');
+                if(btn.innerHTML === 'Recording')
+                    this.onRecordPress();
+                this.record.playRecordedSounds();
+            }
+        }
+        else
+            alert('No sounds recorded yet');
     }
 }
 

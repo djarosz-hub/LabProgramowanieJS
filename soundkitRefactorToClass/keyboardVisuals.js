@@ -7,5 +7,6 @@ export default class KeyboardVisuals{
         setTimeout(() => {
             keyPressed.classList.remove('keyDown');
         }, 200);
+        //console.log('keycode:',keyCode);
     }
 }
