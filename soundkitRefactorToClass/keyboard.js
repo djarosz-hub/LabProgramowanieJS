@@ -1,11 +1,13 @@
 import Key from './key.js';
 import KeyboardVisuals from './keyboardVisuals.js';
+
 export default class Keyboard {
     constructor(){
         this.recordedSounds = [];
         this.recordStartTime = 0;
         this.recordingState = false;
     }
+    
     tryToSaveSound(soundObj){
         console.log('test');
     }
@@ -81,6 +83,7 @@ export default class Keyboard {
             const soundObj = new Key(keyPressed,soundId,this.recordStartTime);
             console.log(soundObj.time);
             soundObj.playSound();
+            
             this.tryToSaveSound(soundObj);
             //this.onRecordPress();
             // if(this.recordingState === true)
