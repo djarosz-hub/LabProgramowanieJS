@@ -78,7 +78,7 @@ export default class Keyboard {
         if(soundId){
             KeyboardVisuals.keyHighlight(keyPressed);
             let soundObj;
-            if(this.record){
+            if(this.record && this.record.recordingState){
                 console.log('jest rekord');
                 soundObj = new Key(keyPressed,soundId,soundGroup, this.record.recordStartTime);
                 this.record.tryToSaveSound(soundObj);
@@ -109,6 +109,7 @@ export default class Keyboard {
             const btn = document.getElementById('recordBtn');
             btn.innerHTML = 'Record';
             btn.classList.remove('recording');
+            this.record.recordingState = false;
         }
     }
     onPlayPress(){

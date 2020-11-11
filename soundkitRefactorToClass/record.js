@@ -5,18 +5,32 @@ export default class RecordAndPlay{
         this.recordedSounds = [];
         this.recordStartTime = Date.now().toString();
         this.recordingState = true;
+        this.playingState = false;
     }
     tryToSaveSound(soundObj){
         if(this.appropriateGroupChecked(soundObj.group))
             this.recordedSounds.push(soundObj);
     }
     playRecordedSounds(){
-        for(const s of this.recordedSounds){
-            if(this.appropriateGroupChecked(s.group))
-                setTimeout(() => {
-                    s.playSound();
-                    KeyboardVisuals.keyHighlight(s.keyPressed);
-                }, s.time);
+        if(!this.playingState){
+            this.playingState = true;
+            const lastSoundTime = this.recordedSounds[this.recordedSounds.length-1].time;
+            this.recordedSounds.push('Finish');
+            for(const s of this.recordedSounds){
+                if(s==='Finish'){
+                    this.recordedSounds.pop();
+                    setTimeout(() => {
+                        this.playingState = false;
+                        console.log('play Button available again');
+                    }, lastSoundTime);
+                }
+                if(this.appropriateGroupChecked(s.group))
+                    setTimeout(() => {
+                        s.playSound();
+                        KeyboardVisuals.keyHighlight(s.keyPressed);
+                    }, s.time);
+            }
+
         }
     }
 
