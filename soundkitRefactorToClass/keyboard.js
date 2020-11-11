@@ -8,88 +8,72 @@ export default class Keyboard {
     
     onKeyPress(ev){
         const keyPressed = ev.code;
-        let soundId;
-        switch(keyPressed){
-        case 'Digit1':
-            soundId = 'clap1';
-            break;
-        case 'Digit2':
-            soundId = 'clap2';
-            break;
-        case 'Digit3':
-            soundId = 'clap3';
-            break;
-        case 'Digit4':
-            soundId = 'clap4';
-            break;
-        case 'Digit5':
-            soundId = 'clap5';
-            break;
-        case 'KeyQ':
-            soundId = 'hihat1';
-            break;
-        case 'KeyW':
-            soundId = 'hihat2';
-            break;
-        case 'KeyE':
-            soundId = 'hihat3';
-            break;
-        case 'KeyR':
-            soundId = 'hihat4';
-            break;
-        case 'KeyT':
-            soundId = 'hihat5';
-            break;
-        case 'KeyA':
-            soundId = 'kick1';
-            break;
-        case 'KeyS':
-            soundId = 'kick2';
-            break;
-        case 'KeyD':
-            soundId = 'kick3';
-            break;
-        case 'KeyF':
-            soundId = 'kick4';
-            break;
-        case 'KeyG':
-            soundId = 'kick5';
-            break;
-        case 'KeyZ':
-            soundId = 'perc1';
-            break;
-        case 'KeyX':
-            soundId = 'perc2';
-            break;
-        case 'KeyC':
-            soundId = 'perc3';
-            break;
-        case 'KeyV':
-            soundId = 'perc4';
-            break;
-        case 'KeyB':
-            soundId = 'perc5';
-            break;
-        }
+        let soundId = this.getSoundId(keyPressed);
         console.log(keyPressed);
         console.log(soundId);
-        const soundGroup = this.getSoundGroup(soundId);
         //console.log(soundGroup);
         if(soundId){
+            const soundGroup = this.getSoundGroup(soundId);
             KeyboardVisuals.keyHighlight(keyPressed);
             let soundObj;
             if(this.record && this.record.recordingState){
-                console.log('jest rekord');
+                console.log('recording sound');
                 soundObj = new Key(keyPressed,soundId,soundGroup, this.record.recordStartTime);
                 this.record.tryToSaveSound(soundObj);
                 console.log(this.record.recordedSounds);
             }
             else{
-                console.log('nie ma rekorda');
                 soundObj = new Key(keyPressed,soundId, soundGroup, undefined);
             }    
             soundObj.playSound();
         }
+    }
+    getSoundId(eventCode){
+        switch(eventCode){
+        case 'Digit1':
+            return 'clap1';
+        case 'Digit2':
+            return 'clap2';
+        case 'Digit3':
+            return 'clap3';
+        case 'Digit4':
+            return 'clap4';
+        case 'Digit5':
+            return 'clap5';
+        case 'KeyQ':
+            return 'hihat1';
+        case 'KeyW':
+            return 'hihat2';
+        case 'KeyE':
+            return 'hihat3';
+        case 'KeyR':
+            return 'hihat4';
+        case 'KeyT':
+            return 'hihat5';
+        case 'KeyA':
+            return 'kick1';
+        case 'KeyS':
+            return 'kick2';
+        case 'KeyD':
+            return 'kick3';
+        case 'KeyF':
+            return 'kick4';
+        case 'KeyG':
+            return 'kick5';
+        case 'KeyZ':
+            return 'perc1';
+        case 'KeyX':
+            return 'perc2';
+        case 'KeyC':
+            return 'perc3';
+        case 'KeyV':
+            return 'perc4';
+        case 'KeyB':
+            return 'perc5';
+        default:
+            return undefined;
+        }
+
     }
     getSoundGroup(sound){
         const group = sound.substring(0,sound.length-1) + 's';
