@@ -85,9 +85,7 @@ export default class Notes{
         htmlButton.innerHTML = 'Remove';
         htmlButton.addEventListener('click',()=> {
             this.ui.removeNoteBtnClick(note.id, this.notes);
-            setTimeout(() => {
-                this.synchronizeLs();
-            }, (10));
+            this.synchronizeLs();
         });
 
         htmlNote.appendChild(htmltitle);
@@ -151,9 +149,7 @@ export default class Notes{
             palette.appendChild(col);
             col.addEventListener('click',()=>{
                 this.ui.changeColor(col.classList[0],noteId,this.notes);
-                setTimeout(() => {
-                    this.synchronizeLs();
-                }, (10));
+                this.synchronizeLs();
             });
         }
         return palette;
@@ -173,9 +169,7 @@ export default class Notes{
         pinnedInput.addEventListener('change',()=>{
             console.log('klikniety check');
             this.ui.onPinnedClick(isPinned,noteId,this.notes);
-            setTimeout(() => {
-                this.synchronizeLs();
-            }, (10));
+            this.synchronizeLs();
         });
         return pinnedAreaDiv;
     }
