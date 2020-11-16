@@ -22,8 +22,8 @@ const ball = {
     x:windowWidth/2,
     y:windowHeight/2,
     r:10,
-    speedX:1,
-    speedY:1,
+    speedX:0,
+    speedY:0,
 };
 const phonePosition = {
     initialAlpha: 0,
