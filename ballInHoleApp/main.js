@@ -6,6 +6,16 @@ function resizeCanvas(){
     htmlCanvas.height = windowHeight;
 }
 resizeCanvas();
+let bestTimeFromLs;
+if(localStorage.getItem('gameBestTime')){
+    bestTimeFromLs = localStorage.getItem('gameBestTime');
+}
+else
+    bestTimeFromLs = ' --:--';
+// alert('Rotate Your device to collect red circles as fast as possible, falling into black hole ends game. Hold Your device in vertical portrait mode.\n'+ 'Best time: '+bestTimeFromLs + ' seconds.');
+// alert('Game Starts!');
+console.log(bestTimeFromLs);
+const howManyHolesInGame = 2;
 const ctx = htmlCanvas.getContext('2d');
 const gameStartTime = Date.now();
 const ball = {
@@ -16,23 +26,22 @@ const ball = {
     speedY:1,
 };
 const phonePosition = {
+    initialAlpha: 0,
+    initialBeta: 0,
     alpha: 0,
-    beta: 90,
+    beta: 0,
 };
-let bestTimeFromLs;
-if(localStorage.getItem('gameBestTime'))
-    bestTimeFromLs = localStorage.getItem('gameBestTime');
 
 let holesArray = createHolesCoords();
 function moveBall(){
+    if(holesArray.length == 0)
+        gameEnd(true);
     const verticalMove = calculateVerticalMove();
     const horizontalMove = calculateHorizontalMove();
     ball.x +=horizontalMove*ball.speedX;
     ball.y +=verticalMove*ball.speedY;
     // console.log(holesArray);
     //console.log('x',ball.x,'y', ball.y,'speedx',ball.speedX,'speedY',ball.speedY);
-    if(holesArray.length == 0)
-        gameEnd(true);
     ctx.clearRect(0,0,windowWidth,windowHeight);
     checkColission(holesArray);
     drawHoles(ctx,holesArray);
@@ -42,33 +51,39 @@ function moveBall(){
     ctx.fill();
 }
 function calculateHorizontalMove(){
-    const ballXMove = phonePosition.alpha/60;
-    //console.log('horizontal move', ballXMove);
+    const ballXMove = (phonePosition.alpha - phonePosition.initialAlpha)/60;
     return ballXMove;
 }
 function calculateVerticalMove(){
-    const ballYMove = (phonePosition.beta-90)/60;
-    //console.log('vertical move', ballYMove);
+    if(phonePosition.beta < -90)
+        return 0;
+    const ballYMove = (phonePosition.beta-phonePosition.initialBeta)/60;
     return ballYMove;
 }
 function calculateBallSpeed(){
-    const beta = phonePosition.beta;
-    const alpha = phonePosition.alpha;
-    ball.speedY = 1 + Math.abs((beta-90)/60);
-    ball.speedX = 1 + Math.abs(alpha/60);
+    ball.speedY = 1 + Math.abs((phonePosition.beta - phonePosition.initialBeta)/60);
+    ball.speedX = 1 + Math.abs((phonePosition.alpha - phonePosition.initialAlpha)/60);
 }
 function createHolesCoords(){
     const arr = [];
-    for(let i = 0; i < 10; i++){
+    for(let i = 0; i < howManyHolesInGame; i++){
         let x = Math.random()*windowWidth;
         let y = Math.random()*windowHeight;
         //console.log('ball x:', ball.x, 'ball y:', ball.y);
-        if((Math.abs(x - ball.x)) < 50){
-            if((Math.abs(y - ball.y) < 50))
+        if((Math.abs(x - ball.x)) < 30){
+            if((Math.abs(y - ball.y) < 30))
                 y += 70;   
             else
                 x += 70;
         }
+        if ( x <= 16 )
+            x+=15;
+        if( windowWidth - 16 < x)
+            x-=15;
+        if ( y <= 16 )
+            y+= 15;
+        if ( windowHeight - 16 < y)
+            y-=15;
         const holeObj = {
             x:x,
             y:y,
@@ -105,8 +120,6 @@ function checkColission(arr){
                 // console.log('colision with wrong hole');
                 if(Math.abs(ball.x - hole.x) <= hole.r && Math.abs(ball.y - hole.y) <= hole.r){
                     console.log(ball.x - hole.x);
-                    console.log('you felt in wrong hole');
-                    clearInterval(interval);
                     gameEnd(false);
                 }
             }
@@ -116,27 +129,41 @@ function checkColission(arr){
 }
 
 moveBall(0,0);
+let firstPhonePosition = 1;
 window.addEventListener('deviceorientation', getPhonePosition);
 function getPhonePosition(ev){
-    // console.log(ev.alpha);
-    // console.log(ev.beta);
-    phonePosition.alpha = ev.alpha;
-    phonePosition.beta = ev.beta;
-    calculateBallSpeed();
-    moveBall();
+    if(firstPhonePosition === 1){
+        phonePosition.initialAlpha = ev.alpha;
+        phonePosition.initialBeta = ev.beta;
+        firstPhonePosition = 0;
+    }
+    else{
+        phonePosition.alpha = ev.alpha;
+        phonePosition.beta = ev.beta;
+        console.log(phonePosition.alpha);
+        console.log(phonePosition.beta);
+        calculateBallSpeed();
+        moveBall();
+    }
 }
 //const are not hoisted
 let interval = setInterval(() => {
     moveBall();
 }, 1000/60);
+
 function gameEnd(matchWon){
+    clearInterval(interval);
     window.removeEventListener('deviceorientation',getPhonePosition);
-    const gameStopTime = Date.now();
-    const gamePlayTime = (gameStopTime-gameStartTime)/1000;
-    const output = `${Math.floor(gamePlayTime/60)}:${(gamePlayTime%60).toFixed(1)}`;
     if(matchWon){
-        console.log('best time:', bestTimeFromLs);
-        alert(output);
+        const gameStopTime = Date.now();
+        const gamePlayTime = (gameStopTime-gameStartTime)/1000;
+        let output = `${Math.floor(gamePlayTime/60)}:${(gamePlayTime%60).toFixed(1)}`;
+        if(gamePlayTime < bestTimeFromLs || bestTimeFromLs == ' --:--'){
+            localStorage.setItem('gameBestTime', gamePlayTime);
+            output += '. You broke the record!';
+        }
+        // console.log('best time:', bestTimeFromLs);
+        alert('Play time: ' + output);
     }
     else{
         alert('You fell in wrong hole! Game over.');
