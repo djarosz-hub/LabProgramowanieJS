@@ -49,18 +49,18 @@ function moveBall(){
     ctx.fill();
 }
 function calculateHorizontalMove(){
-    const ballXMove = (phonePosition.alpha - phonePosition.initialAlpha)/60;
+    const ballXMove = (phonePosition.alpha - phonePosition.initialAlpha)/35;
     return ballXMove;
 }
 function calculateVerticalMove(){
     if(phonePosition.beta < -90)
         return 0;
-    const ballYMove = (phonePosition.beta-phonePosition.initialBeta)/60;
+    const ballYMove = (phonePosition.beta-phonePosition.initialBeta)/35;
     return ballYMove;
 }
 function calculateBallSpeed(){
-    ball.speedY = 1 + Math.abs((phonePosition.beta - phonePosition.initialBeta)/60);
-    ball.speedX = 1 + Math.abs((phonePosition.alpha - phonePosition.initialAlpha)/60);
+    ball.speedY = 1 + Math.abs((phonePosition.beta - phonePosition.initialBeta)/35);
+    ball.speedX = 1 + Math.abs((phonePosition.alpha - phonePosition.initialAlpha)/35);
 }
 function createHolesCoords(){
     const arr = [];
@@ -137,7 +137,6 @@ function getPhonePosition(ev){
         phonePosition.alpha = ev.alpha;
         phonePosition.beta = ev.beta;
         calculateBallSpeed();
-        moveBall();
     }
 }
 let interval = setInterval(() => {
