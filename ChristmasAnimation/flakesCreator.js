@@ -8,13 +8,15 @@ export default class FlakesCreator{
         this.flakesFallingRadius = flakesFallingRadius;
         this.flakesSpeed = flakesSpeed;
     }
+
     CreateFlakes(){
+        const m = Math;
         for(let i = 0; i< this.flakesNumber; i++){
-            const rndXPos = Math.random() * this.windowWidth;
-            const rndYPos = Math.random() * this.windowHeight;
-            const rndRadius = Math.floor(Math.random() * (4 - 1)) + 1;
-            const rndFallingRadius = Math.random() * this.flakesFallingRadius;
-            const rndSpeed = Math.random() * this.flakesSpeed;
+            const rndXPos = m.random() * this.windowWidth;
+            const rndYPos = m.random() * this.windowHeight;
+            const rndRadius = m.floor(m.random() * (4 - 1)) + 1;
+            const rndFallingRadius = m.random() * this.flakesFallingRadius;
+            const rndSpeed = m.random() * this.flakesSpeed;
             const flake = new SnowFlake(rndXPos,rndYPos,rndRadius,rndFallingRadius,rndSpeed);
             this.flakesArray.push(flake);
         }
