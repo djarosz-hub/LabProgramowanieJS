@@ -11,5 +11,14 @@ function getWeather(weather){
     console.log(weather);
     console.log(weather.name);
     console.log(weather.main.temp);
+    console.log(weather.main.feels_like);
     console.log(weather.main.pressure);
+    console.log(weather.weather[0].description);
+    const iconId = weather.weather[0].icon;
+    const iconUrl = `http://openweathermap.org/img/wn/${iconId}@2x.png`;
+    console.log(iconUrl);
+    const img = new Image();
+    img.src=iconUrl;
+    console.log(img);
+    document.body.appendChild(img);   
 }
