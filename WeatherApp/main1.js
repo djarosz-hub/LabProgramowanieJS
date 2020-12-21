@@ -34,8 +34,13 @@ function SynchronizeWithActualData(weather){
         RefreshData();
     }
 }
+function RefreshData(){
+    citiesInLocalStorage.length = 0;
+    citiesWeatherObjArr.length = 0;
+    mainCitiesSection.innerHTML = '';
+    RenderWeatherInfoFromLS();
+}
 function SynchronizeLS(){
-    console.log(citiesInLocalStorage);
     localStorage.setItem(LSKey, JSON.stringify(citiesInLocalStorage));
 }
 function GetCityWeatherDataFromApi(cityName){
@@ -120,3 +125,5 @@ function CreateHTMLObj(weatherObj){
 
     mainCitiesSection.appendChild(citySection);
 }
+// setInterval(RefreshData,5000);
+
