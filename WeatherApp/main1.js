@@ -4,6 +4,14 @@ const mainCitiesSection = document.getElementById('citiesInfoContainer');
 const cityAddBtn = document.getElementById('cityAddBtn');
 const citiesInLocalStorage = [];
 const citiesWeatherObjArr = [];
+const archivedCityObjArr = [];
+let reloaderFlag = false;
+const testBtn = document.getElementById('test');
+testBtn.addEventListener('click',TestFuncToCheckIfArchivedCitiesAppears);
+function TestFuncToCheckIfArchivedCitiesAppears(){
+    console.log('test');
+    citiesInLocalStorage.length = 0;
+}
 document.addEventListener('DOMContentLoaded', RenderWeatherInfoFromLS);
 cityAddBtn.addEventListener('click', GetCityInfoFromInput);
 function GetCityInfoFromInput(){
@@ -25,7 +33,25 @@ function RenderWeatherInfoFromLS(){
     Promise.allSettled(citiesInLocalStorage.map(GetCityWeatherDataFromApi))
         .then(()=>citiesWeatherObjArr.sort(CitiesSort))
         .then(()=>AddWeatherInfoToHtml())
+        .then(()=> CheckIfReloadWasComplete())
         .catch(e=>console.log(e));
+    // .finally(()=>ChangeMainContainerDescription());
+}
+function CheckIfReloadWasComplete(){
+    if(reloaderFlag){
+        for(const city of archivedCityObjArr){
+            const archivedCityName = city.name;
+            if(!citiesWeatherObjArr.some(cityObj => cityObj.name === archivedCityName)){
+                console.log(` checked : ${city.name}`);
+                const cityTakenFromArchive = true;
+                CreateHTMLObj(city,cityTakenFromArchive);
+                citiesInLocalStorage.push(archivedCityName);
+
+            }
+        }
+    }
+    //reloaderFlag is activated after first load of page, causes next city additions to run this func and check if all cities were downloaded correctly, if not this func restores last weather obj with same city name which downloading failed 
+    reloaderFlag = true;
 }
 function SynchronizeWithActualData(weather){
     if(!citiesInLocalStorage.includes(weather.name)){
@@ -35,10 +61,15 @@ function SynchronizeWithActualData(weather){
     }
 }
 function RefreshData(){
+    ArchiveCurrentCitiesObj();
     citiesInLocalStorage.length = 0;
     citiesWeatherObjArr.length = 0;
     mainCitiesSection.innerHTML = '';
     RenderWeatherInfoFromLS();
+}
+function ArchiveCurrentCitiesObj(){
+    archivedCityObjArr.length = 0;
+    citiesWeatherObjArr.map(c => archivedCityObjArr.push(c));
 }
 function SynchronizeLS(){
     localStorage.setItem(LSKey, JSON.stringify(citiesInLocalStorage));
@@ -48,7 +79,7 @@ function GetCityWeatherDataFromApi(cityName){
     return fetch(apiUrl)
         .then(resp => TryToParseResponse(resp))
         .then(weather => CreateWeatherObj(weather))
-        .then(weatherObj => {citiesWeatherObjArr.push(weatherObj);console.log(weatherObj);})
+        .then(weatherObj => {citiesWeatherObjArr.push(weatherObj);})
         .catch(e => console.log(e));
 }
 function GetCitiesFromLS(){
@@ -84,10 +115,11 @@ function CitiesSort(a, b){
     return 0;
 }
 function AddWeatherInfoToHtml(){
+    const cityTakenFromArchive = false;
     for(const city of citiesWeatherObjArr)
-        CreateHTMLObj(city);
+        CreateHTMLObj(city, cityTakenFromArchive);
 }
-function CreateHTMLObj(weatherObj){
+function CreateHTMLObj(weatherObj, cityTakenFromArchive){
     const citySection = document.createElement('section');
     const cityName = document.createElement('h2');
     cityName.innerHTML = weatherObj.name;
@@ -98,32 +130,37 @@ function CreateHTMLObj(weatherObj){
     description.innerHTML = weatherObj.description.charAt(0).toUpperCase() + weatherObj.description.slice(1);
 
     const temperature = document.createElement('li');
-    temperature.innerHTML = `Temperature: ${weatherObj.temp}`;
+    temperature.innerHTML = `Temperature: ${weatherObj.temp} &#8451;`;
 
     const feelsLiketemp = document.createElement('li');
-    feelsLiketemp.innerHTML = `Feels like temperature: ${weatherObj.feelsLiketemp}`;
+    feelsLiketemp.innerHTML = `Feels like temperature: ${weatherObj.feelsLiketemp} &#8451;`;
 
     const pressure = document.createElement('li');
-    pressure.innerHTML = `Pressure: ${weatherObj.pressure}`;
+    pressure.innerHTML = `Pressure: ${weatherObj.pressure} hPa`;
 
     const humidity = document.createElement('li');
-    humidity.innerHTML = `Humidity: ${weatherObj.humidity}`;
+    humidity.innerHTML = `Humidity: ${weatherObj.humidity}%`;
 
     const iconUrl = `http://openweathermap.org/img/wn/${weatherObj.icon}@2x.png`;
     const icon = new Image();
     icon.src = iconUrl;
-
+    
     cityInfos.appendChild(description);
     cityInfos.appendChild(temperature);
     cityInfos.appendChild(feelsLiketemp);
     cityInfos.appendChild(pressure);
     cityInfos.appendChild(humidity);
-
+    
     citySection.appendChild(cityName);
     citySection.appendChild(icon);
     citySection.appendChild(cityInfos);
-
+    
+    if(cityTakenFromArchive){
+        const warning = document.createElement('div');
+        warning.innerHTML = 'uwaga';
+        citySection.appendChild(warning);
+    }
     mainCitiesSection.appendChild(citySection);
 }
-// setInterval(RefreshData,5000);
+// setInterval(RefreshData,3000);
 
