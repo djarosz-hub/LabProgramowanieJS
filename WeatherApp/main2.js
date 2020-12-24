@@ -163,3 +163,6 @@ function CitiesSort(a, b){
     if (a.name < b.name) return -1;
     return 0;
 }
+setInterval(() => {
+    ReloadInfo();
+}, 1000*120);
