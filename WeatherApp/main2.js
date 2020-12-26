@@ -23,14 +23,13 @@ function CheckIfCityIsSupportedByApi(cityName){
         .then(()=>ReloadInfo())
         .catch(e => console.log(e));
 }
-
 function SynchronizeCitiesInfo(){
     cityObjsInLocalStorageArr.length = 0;
     actualCitiesDataFromApiArr.map(city => cityObjsInLocalStorageArr.push(city));
 }
 function CheckIfCityAlreadyExist(cityName){
     const inputNameTrimmed = cityName.trim();
-    const inputNameFormatted = inputNameTrimmed.charAt(0).toUpperCase() + inputNameTrimmed.slice(1);
+    const inputNameFormatted = inputNameTrimmed.charAt(0).toUpperCase() + inputNameTrimmed.slice(1).toLowerCase();
     console.log(inputNameFormatted);
     if(actualCitiesDataFromApiArr.some(city => city.name === inputNameFormatted))
         return false;
@@ -82,14 +81,33 @@ function AddWeatherInfoToHtml(){
     for(const city of actualCitiesDataFromApiArr)
         CreateHTMLObj(city, cityTakenFromArchive);
 }
+function removeCityBtn(event){
+    const icon = event.target;
+    const mainCitySection = icon.parentNode.parentNode;
+    const cityName = findCityNameToRemoveByBtnClick(mainCitySection);
+    RemoveCityFromCityObjectsList(cityName);
+    const parent = mainCitySection.parentNode;
+    parent.removeChild(mainCitySection);
+    ReloadInfo();
+}
+function findCityNameToRemoveByBtnClick(citySection){
+    return citySection.childNodes[0].childNodes[0].childNodes[0].innerHTML;
+}
+function RemoveCityFromCityObjectsList(cityName){
+    const index = cityObjsInLocalStorageArr.findIndex(c => c.name === cityName);
+    cityObjsInLocalStorageArr.splice(index,1);
+}
 function CreateHTMLObj(weatherObj, cityTakenFromArchive){
     const citySection = document.createElement('section');
+    const cityHeader = document.createElement('div');
+    const cityDesc = document.createElement('div');
+
     const cityName = document.createElement('h2');
     cityName.innerHTML = weatherObj.name;
 
     const cityInfos = document.createElement('ul');
 
-    const description = document.createElement('li');
+    const description = document.createElement('text');
     description.innerHTML = weatherObj.description.charAt(0).toUpperCase() + weatherObj.description.slice(1);
 
     const temperature = document.createElement('li');
@@ -107,20 +125,37 @@ function CreateHTMLObj(weatherObj, cityTakenFromArchive){
     const iconUrl = `http://openweathermap.org/img/wn/${weatherObj.icon}@2x.png`;
     const icon = new Image();
     icon.src = iconUrl;
+
+    const removeBtn = document.createElement('div');
+    removeBtn.classList.add('removeBtn');
+    const trashIcon = document.createElement('i');
+    trashIcon.classList.add('demo-icon','icon-trash');
+    removeBtn.appendChild(trashIcon);
+    removeBtn.addEventListener('click', (e)=>removeCityBtn(e));
     
-    cityInfos.appendChild(description);
     cityInfos.appendChild(temperature);
     cityInfos.appendChild(feelsLiketemp);
     cityInfos.appendChild(pressure);
     cityInfos.appendChild(humidity);
+
+    cityDesc.appendChild(cityName);
+    cityDesc.appendChild(description);
+
+    cityHeader.appendChild(cityDesc);
+    cityHeader.appendChild(icon);
     
-    citySection.appendChild(cityName);
-    citySection.appendChild(icon);
+    citySection.appendChild(cityHeader);
     citySection.appendChild(cityInfos);
+    citySection.appendChild(removeBtn);
+    
+    citySection.classList.add('citySection');
+    cityHeader.classList.add('cityHeader');
     
     if(cityTakenFromArchive){
+        citySection.classList.add('outdatedInfo');
         const warning = document.createElement('div');
-        warning.innerHTML = 'uwaga';
+        warning.innerHTML = 'Outdated';
+        warning.classList.add('warningInfo');
         citySection.appendChild(warning);
     }
     mainCitiesSection.appendChild(citySection);
