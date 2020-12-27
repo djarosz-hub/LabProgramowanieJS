@@ -7,8 +7,8 @@ export default class CitiesOrganizer{
         this.cityObjsInLocalStorageArr = [];
         this.actualCitiesDataFromApiArr = [];
         this.db = new Db();
-        this.ui = new Ui();
         this.apiCall = new WeatherApiRequester(this.actualCitiesDataFromApiArr, this);
+        this.ui = new Ui(this.apiCall,this.actualCitiesDataFromApiArr);
     }
     RenderWeatherInfoFromLS(){
         if(this.db.GetCitiesFromLS(this.cityObjsInLocalStorageArr,this.ui)){
@@ -107,6 +107,8 @@ export default class CitiesOrganizer{
     }
     RemoveCityFromCityObjectsList(cityName){
         const index = this.cityObjsInLocalStorageArr.findIndex(c => c.name === cityName);
+        console.log('loggin in removecity in cities organizer');
+        console.log(this.cityObjsInLocalStorageArr[index]);
         this.cityObjsInLocalStorageArr.splice(index,1);
     }
     ReloadInfo(){

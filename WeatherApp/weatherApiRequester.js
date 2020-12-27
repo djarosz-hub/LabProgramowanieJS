@@ -13,7 +13,6 @@ export default class weatherApiRequester{
             .catch(e => console.log(e));
     }
     GetCityWeatherDataFromApi(cityName){
-        // const key = '8a3fb2f55376982bb91a3fd07414d0e7';
         const apiUrl = `https://api.openweathermap.org/data/2.5/weather?q=${cityName}&appid=${this.apiKey}&units=metric`;
         return fetch(apiUrl)
             .then(resp => this.TryToParseResponse(resp))

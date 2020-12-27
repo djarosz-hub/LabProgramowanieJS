@@ -1,19 +1,16 @@
 export default class Ui{
-    constructor(){
-        this.actualCitiesDataFromApiArr;
+    constructor(apiCall,actualCitiesDataFromApiArr){
+        this.actualCitiesDataFromApiArr = actualCitiesDataFromApiArr;
+        this.apiCall = apiCall;
     }
-    InitializeCityAddButton(){
-        this.cityAddBtn = document.getElementById('cityAddBtn');
-        this.cityAddBtn.addEventListener('click', this.GetCityInfoFromInput);
-    }
-    GetCityInfoFromInput(apiCall){
+    GetCityInfoFromInput(){
         const inputCityName = document.getElementById('cityNameInput');
         const nameValue = inputCityName.value;
         if(nameValue !== '' && this.CheckIfCityAlreadyExist(nameValue)){
             console.log(`city ${nameValue} not found in actual data`);
             console.log('cities in actual when checking:');
             console.log(this.actualCitiesDataFromApiArr);
-            apiCall.CheckIfCityIsSupportedByApi(nameValue);
+            this.apiCall.CheckIfCityIsSupportedByApi(nameValue);
         }
         inputCityName.value = '';
     }
@@ -21,6 +18,7 @@ export default class Ui{
         const inputNameTrimmed = cityName.trim();
         const inputNameFormatted = inputNameTrimmed.charAt(0).toUpperCase() + inputNameTrimmed.slice(1).toLowerCase();
         console.log(inputNameFormatted);
+        console.log(this.actualCitiesDataFromApiArr);
         if(this.actualCitiesDataFromApiArr.some(city => city.name === inputNameFormatted))
             return false;
         return true;
