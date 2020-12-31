@@ -6,9 +6,9 @@ const mainCitiesSection = document.getElementById('citiesInfoContainer');
 const cityAddBtn = document.getElementById('cityAddBtn');
 const citiesInLocalStorage = [];
 //on rerender change info inside instead of redownloading
-document.addEventListener('DOMContentLoaded', () => {    
-    RenderCitiesFromLS();}
-);
+// document.addEventListener('DOMContentLoaded', () => {    
+//     RenderCitiesFromLS();}
+// );
 cityAddBtn.addEventListener('click', GetCityInfo);
 function GetCityInfo(){
     const inputCityName = document.getElementById('cityNameInput');
@@ -105,4 +105,3 @@ function CreateHTMLObj(weatherObj){
 
     mainCitiesSection.appendChild(citySection);
 }
-setInterval(RefreshData,5000);
