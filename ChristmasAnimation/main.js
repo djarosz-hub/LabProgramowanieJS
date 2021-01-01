@@ -9,7 +9,7 @@ htmlCanvas.width = windowWidth;
 htmlCanvas.height = windowHeight;
 const ctx = htmlCanvas.getContext('2d');
 
-const flakesNumber = 1000;
+const flakesNumber = 800;
 const flakesSpeed = 5;
 const flakesFallingRadius = 3;
 const flakesCreator = new FlakesCreator(flakesNumber,flakesSpeed, flakesFallingRadius, windowWidth,windowHeight);
@@ -25,6 +25,30 @@ const maxWaterLevel = windowHeight/2-textToDisplayFontSize/4;
 function animate(){
     ctx.clearRect(0,0,windowWidth,windowHeight);
     ctx.save();
+
+    ctx.beginPath();
+    ctx.moveTo(0,windowHeight);
+    ctx.lineTo(windowWidth,windowHeight);
+    ctx.lineTo(windowWidth,windowHeight-waterLevel);
+    ctx.lineTo(0,windowHeight-waterLevel);
+    ctx.closePath();
+    const waterGradient = ctx.createLinearGradient(0,windowHeight,0,windowHeight-waterLevel);
+
+    waterGradient.addColorStop(0,'#275e8e');
+    waterGradient.addColorStop(0.3,'#3f709a');
+    waterGradient.addColorStop(0.6,'#5782a7');
+    waterGradient.addColorStop(1,'#6f94b3');
+
+    ctx.fillStyle = waterGradient;
+    ctx.shadowColor = '#5a86d5';
+    ctx.shadowOffsetX = 0;
+    ctx.shadowOffsetY = 0;
+    ctx.shadowBlur =5;
+    ctx.fill();
+
+    ctx.restore();
+    ctx.save();
+
     ctx.textAlign = 'center';
     ctx.textBaseline = 'middle';
     ctx.font = `bold ${textToDisplayFontSize}px Mountains of Christmas`;
@@ -48,6 +72,7 @@ function animate(){
     const xPosOfTextStart = textLengthInPx/2;
     const yPosOfBurningLine = windowHeight/2 - textToDisplayFontSize/4;
     ctx.restore();
+
     for(const [index,flk] of flakesArray.entries()){
         ctx.beginPath();
         const xMove = 1+flk.fallingRadius;
@@ -64,7 +89,7 @@ function animate(){
             flk.stuckOnElement = false;
         }
         ctx.arc(flk.posX+=xMove, flk.posY+=yMove,flk.radius,0,m.PI*2);
-        if(SnowFlake.IsOutOfWindow(flk.posX,flk.posY,windowWidth,windowHeight)){
+        if(SnowFlake.IsOutOfWindow(flk.posX,flk.posY,windowWidth,windowHeight-waterLevel)){
             flk.ReturnToTop(index,flakesArray,windowWidth);
         }
         if(flk.IsFlakeOnTextArea(flk.posX,flk.posY,yPosOfBurningLine,textToDisplayFontSize,windowWidth,textLengthInPx,xPosOfTextStart))
@@ -74,38 +99,19 @@ function animate(){
         ctx.fillStyle = '#ffffff';
         ctx.fill();
     }
+
     for(const [index,drop] of dropsArray.entries()){
         ctx.beginPath();
         ctx.arc(drop.posX, drop.posY, drop.r, 0, m.PI*2);
-        ctx.fillStyle = '#3792cb';
+        ctx.fillStyle = '#6495ed';
         ctx.fill();
         drop.posY += drop.speed * 5;
-        if(SnowFlake.IsOutOfWindow(drop.posX,drop.posY,windowWidth,windowHeight)){
+        if(SnowFlake.IsOutOfWindow(drop.posX,drop.posY,windowWidth,windowHeight-waterLevel)){
             dropsArray.splice(index,1);
             if(waterLevel < maxWaterLevel)
                 waterLevel += 0.3;
         }
     }
-    ctx.beginPath();
-    ctx.moveTo(0,windowHeight);
-    ctx.lineTo(windowWidth,windowHeight);
-    ctx.lineTo(windowWidth,windowHeight-waterLevel);
-    ctx.lineTo(0,windowHeight-waterLevel);
-    ctx.closePath();
-    const waterGradient = ctx.createLinearGradient(0,windowHeight,0,windowHeight-waterLevel);
-    // waterGradient.addColorStop(0,'#0e2433');
-    waterGradient.addColorStop(0,'#1c4866');
-    waterGradient.addColorStop(0.5,'#296d98');
-    waterGradient.addColorStop(1,'#3792cb');
-    // waterGradient.addColorStop(1,'#45b6fe');
-    ctx.fillStyle = waterGradient;
-    ctx.shadowColor = '#3792cb';
-    ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.shadowBlur =5;
-    ctx.fill();
-    ctx.restore();
-
     requestAnimationFrame(animate);
 
 }
