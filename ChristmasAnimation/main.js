@@ -12,15 +12,24 @@ const ctx = htmlCanvas.getContext('2d');
 const flakesNumber = 800;
 const flakesSpeed = 5;
 const flakesFallingRadius = 3;
+const cloudsCount = 100;
+const m = Math;
 const flakesCreator = new FlakesCreator(flakesNumber,flakesSpeed, flakesFallingRadius, windowWidth,windowHeight);
 flakesCreator.CreateFlakes();
 const flakesArray = flakesCreator.GetFlakes();
 const dropsArray = [];
-const m = Math;
+const steamCloudsArray = [];
+for(let i = 0; i < cloudsCount; i++){
+    const steamCloudObj = {
+        radius: m.random()*5 + 1,
+        growRate:1
+    };
+    steamCloudsArray.push(steamCloudObj);
+}
 const textToDisplay = 'Merry Christmas';
 const textToDisplayFontSize = 80;
 let waterLevel = 0;
-const maxWaterLevel = windowHeight/2-textToDisplayFontSize/4;
+const maxWaterLevel = windowHeight/2 - textToDisplayFontSize/4;
 
 function animate(){
     ctx.clearRect(0,0,windowWidth,windowHeight);
@@ -34,16 +43,14 @@ function animate(){
     ctx.closePath();
     const waterGradient = ctx.createLinearGradient(0,windowHeight,0,windowHeight-waterLevel);
 
-    waterGradient.addColorStop(0,'#275e8e');
-    waterGradient.addColorStop(0.3,'#3f709a');
-    waterGradient.addColorStop(0.6,'#5782a7');
-    waterGradient.addColorStop(1,'#6f94b3');
+    waterGradient.addColorStop(0,'#013448');
+    waterGradient.addColorStop(1,'#235669');
 
     ctx.fillStyle = waterGradient;
-    ctx.shadowColor = '#5a86d5';
+    ctx.shadowColor = '#235669';
     ctx.shadowOffsetX = 0;
-    ctx.shadowOffsetY = 0;
-    ctx.shadowBlur =5;
+    ctx.shadowOffsetY = -5;
+    ctx.shadowBlur = 10;
     ctx.fill();
 
     ctx.restore();
@@ -103,15 +110,32 @@ function animate(){
     for(const [index,drop] of dropsArray.entries()){
         ctx.beginPath();
         ctx.arc(drop.posX, drop.posY, drop.r, 0, m.PI*2);
-        ctx.fillStyle = '#6495ed';
+        ctx.fillStyle = '#346779';
         ctx.fill();
         drop.posY += drop.speed * 5;
         if(SnowFlake.IsOutOfWindow(drop.posX,drop.posY,windowWidth,windowHeight-waterLevel)){
             dropsArray.splice(index,1);
             if(waterLevel < maxWaterLevel)
-                waterLevel += 0.3;
+                waterLevel += 1;
         }
     }
+    ctx.save();
+    if(waterLevel > maxWaterLevel - textToDisplayFontSize/3)
+    {
+        for(const cloud of steamCloudsArray){
+            ctx.beginPath();
+            cloud.growRate += m.random();
+            ctx.arc((windowWidth/2-textLengthInPx/2)+m.random()*textLengthInPx,
+                windowHeight-waterLevel,
+                cloud.radius+cloud.growRate,
+                0,
+                m.PI*2);
+            ctx.globalAlpha = 1 - (0.1 * cloud.growRate);
+            ctx.fillStyle = 'white';
+            ctx.fill();
+        }
+    }
+    ctx.restore();
     requestAnimationFrame(animate);
 
 }
