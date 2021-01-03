@@ -4,6 +4,7 @@ export default class SteamCloud{
         this.yPos = 0;
         this.radius = 5;
         this.growRate = math.random() + 1;
+        // this.disappearingRate = 1;
         this.disappearingRate = 0.015;
     }
 }

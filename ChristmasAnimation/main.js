@@ -22,6 +22,7 @@ const dropsArray = [];
 const steamCloudsArray = [];
 let textLengthInitializedInAnimation;
 const textToDisplay = 'Merry Christmas';
+const greetingText = 'And a Happy New Year';
 const textToDisplayFontSize = 80;
 let waterLevel = 0;
 const maxWaterLevel = windowHeight/2 - textToDisplayFontSize/4;
@@ -106,23 +107,25 @@ function animate(){
     for(const [index,drop] of dropsArray.entries()){
         ctx.beginPath();
         ctx.arc(drop.posX, drop.posY, drop.r, 0, m.PI*2);
-        ctx.fillStyle = '#346779';
+        ctx.fillStyle = '#3895d3';
         ctx.fill();
         drop.posY += drop.speed * 5;
         if(SnowFlake.IsOutOfWindow(drop.posX,drop.posY,windowWidth,windowHeight-waterLevel)){
             dropsArray.splice(index,1);
             if(waterLevel < maxWaterLevel)
-                waterLevel += 1;
+                waterLevel += 0.5;
         }
     }
     ctx.save();
     if(waterLevel >= maxWaterLevel - 1)
     {
+
         for(const [index,cloud] of steamCloudsArray.entries()){
+
             cloud.xPos += 0.2;
             cloud.yPos += 0.7;
             cloud.radius += cloud.growRate/2;
-            if(cloud.radius > 200){
+            if(cloud.radius > 150){
                 steamCloudsArray.splice(index,1);
                 const newCloud = new SteamCloud(windowWidth,m,textLengthInitializedInAnimation);
                 steamCloudsArray.push(newCloud);
@@ -138,6 +141,18 @@ function animate(){
                 ctx.globalAlpha = cloud.disappearingRate;
                 ctx.fillStyle = '#ffffff';
                 ctx.fill();
+
+                ctx.save();
+
+                ctx.textAlign = 'center';
+                ctx.textBaseline = 'middle';
+                ctx.font = `bold ${textToDisplayFontSize}px Mountains of Christmas`;
+                ctx.fillStyle = '#white';
+                ctx.fillText(greetingText,
+                    m.floor(windowWidth/2),
+                    m.floor(windowHeight - m.floor(1/3 * windowHeight)));
+
+                ctx.restore();
             }
         }
     }
