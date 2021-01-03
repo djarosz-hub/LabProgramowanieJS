@@ -1,5 +1,6 @@
 import FlakesCreator from './flakesCreator.js';
 import SnowFlake from './snowFlake.js';
+import SteamCloud from './steamCloud.js';
 
 const htmlCanvas = document.getElementById('canvas');
 
@@ -19,13 +20,7 @@ flakesCreator.CreateFlakes();
 const flakesArray = flakesCreator.GetFlakes();
 const dropsArray = [];
 const steamCloudsArray = [];
-for(let i = 0; i < cloudsCount; i++){
-    const steamCloudObj = {
-        radius: m.random()*5 + 1,
-        growRate:1
-    };
-    steamCloudsArray.push(steamCloudObj);
-}
+let textLengthInitializedInAnimation;
 const textToDisplay = 'Merry Christmas';
 const textToDisplayFontSize = 80;
 let waterLevel = 0;
@@ -60,6 +55,7 @@ function animate(){
     ctx.textBaseline = 'middle';
     ctx.font = `bold ${textToDisplayFontSize}px Mountains of Christmas`;
     const textLengthInPx = ctx.measureText(textToDisplay).width;
+    textLengthInitializedInAnimation = textLengthInPx;
     const textGradient = ctx.createRadialGradient(
         windowWidth/2,
         windowHeight/2,
@@ -120,23 +116,36 @@ function animate(){
         }
     }
     ctx.save();
-    if(waterLevel > maxWaterLevel - textToDisplayFontSize/3)
+    if(waterLevel >= maxWaterLevel - 1)
     {
-        for(const cloud of steamCloudsArray){
-            ctx.beginPath();
-            cloud.growRate += m.random();
-            ctx.arc((windowWidth/2-textLengthInPx/2)+m.random()*textLengthInPx,
-                windowHeight-waterLevel,
-                cloud.radius+cloud.growRate,
-                0,
-                m.PI*2);
-            ctx.globalAlpha = 1 - (0.1 * cloud.growRate);
-            ctx.fillStyle = 'white';
-            ctx.fill();
+        for(const [index,cloud] of steamCloudsArray.entries()){
+            cloud.xPos += 0.2;
+            cloud.yPos += 0.7;
+            cloud.radius += cloud.growRate/2;
+            if(cloud.radius > 200){
+                steamCloudsArray.splice(index,1);
+                const newCloud = new SteamCloud(windowWidth,m,textLengthInitializedInAnimation);
+                steamCloudsArray.push(newCloud);
+            }
+            else{
+                ctx.beginPath();   
+                ctx.arc(
+                    m.floor(cloud.xPos),
+                    m.floor(windowHeight-waterLevel-cloud.yPos),
+                    m.floor(cloud.radius),
+                    0,
+                    m.PI*2);
+                ctx.globalAlpha = cloud.disappearingRate;
+                ctx.fillStyle = '#ffffff';
+                ctx.fill();
+            }
         }
     }
     ctx.restore();
     requestAnimationFrame(animate);
-
 }
 requestAnimationFrame(animate);
+for(let i = 0; i < cloudsCount; i++){
+    const steamCloud = new SteamCloud(windowWidth, m,textLengthInitializedInAnimation);
+    steamCloudsArray.push(steamCloud);
+}
