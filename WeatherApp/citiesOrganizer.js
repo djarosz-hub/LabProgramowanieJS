@@ -7,7 +7,13 @@ export default class CitiesOrganizer{
         this.cityObjsInLocalStorageArr = [];
         this.actualCitiesDataFromApiArr = [];
         this.db = new Db();
-        this.apiCall = new WeatherApiRequester(this.actualCitiesDataFromApiArr, this);
+        // this.apiCall = new WeatherApiRequester(this.actualCitiesDataFromApiArr, this);
+        this.apiCall2 = new WeatherApiRequester(this.actualCitiesDataFromApiArr);
+        const checkCityPromise  = this.apiCall2.CheckIfCityIsSupportedByApi(cityName);
+        checkCityPromise
+            .then(()=>this.SynchronizeCitiesInfo())
+            .then(()=>this.ReloadInfo())
+
         this.ui = new Ui(this.apiCall,this.actualCitiesDataFromApiArr);
     }
     RenderWeatherInfoFromLS(){

@@ -7,9 +7,9 @@ export default class weatherApiRequester{
         this.citiesOrganizer = citiesOrganizer;
     }
     CheckIfCityIsSupportedByApi(cityName){
-        this.GetCityWeatherDataFromApi(cityName)
-            .then(()=>this.citiesOrganizer.SynchronizeCitiesInfo())
-            .then(()=>this.citiesOrganizer.ReloadInfo())
+       return this.GetCityWeatherDataFromApi(cityName)
+            // .then(()=>this.citiesOrganizer.SynchronizeCitiesInfo())
+            // .then(()=>this.citiesOrganizer.ReloadInfo())
             .catch(e => console.log(e));
     }
     GetCityWeatherDataFromApi(cityName){
@@ -25,5 +25,6 @@ export default class weatherApiRequester{
             return resp.json();
         else
             return Promise.reject('failed to parse response');
+            //tu wyjatek i tu sobie przejdzie po catchach blad
     }
 }
